@@ -1,7 +1,7 @@
 import { cookies, draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { getPageBySlug } from "@/lib/contentful";
+import { getPageBySlug, normalizeSlug } from "@/lib/contentful";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -55,5 +55,5 @@ export async function GET(request: Request) {
   // Send the editor to the page they previewed. We use the slug stored in
   // Contentful, not the slug from the URL, so a malicious link cannot trick
   // this route into redirecting people to an unexpected or harmful destination.
-  redirect(`/${page.fields.slug}`);
+  redirect(`/${normalizeSlug(page.fields.slug)}`);
 }

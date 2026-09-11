@@ -7,6 +7,21 @@ const PREVIEW_HOST = "https://preview.contentful.com";
 
 export const CONTENT_TYPE = "page";
 
+/** Strip slashes and URL prefixes so slugs work safely in `/${slug}` links. */
+export function normalizeSlug(slug: string): string {
+  const trimmed = slug.trim();
+
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    try {
+      return new URL(trimmed).pathname.replace(/^\/+|\/+$/g, "");
+    } catch {
+      // Fall through if the value isn't a valid URL.
+    }
+  }
+
+  return trimmed.replace(/^\/+|\/+$/g, "");
+}
+
 /**
  * Shape of the `page` content type as returned by the Content Preview API.
  * Entries are passed to `useContentfulLiveUpdates` after Content Source Maps
@@ -66,13 +81,22 @@ async function request<T>(params: Record<string, string>): Promise<T> {
 }
 
 export async function getPageBySlug(slug: string): Promise<PageEntry | null> {
-  const { items } = await request<EntryCollection<PageEntry>>({
-    content_type: CONTENT_TYPE,
-    "fields.slug": slug,
-    limit: "1",
-  });
+  const normalized = normalizeSlug(slug);
 
-  return items[0] ?? null;
+  // Contentful entries may store slugs with or without a leading slash.
+  for (const candidate of [normalized, `/${normalized}`]) {
+    const { items } = await request<EntryCollection<PageEntry>>({
+      content_type: CONTENT_TYPE,
+      "fields.slug": candidate,
+      limit: "1",
+    });
+
+    if (items[0]) {
+      return items[0];
+    }
+  }
+
+  return null;
 }
 
 export async function getAllPages(): Promise<PageEntry[]> {
