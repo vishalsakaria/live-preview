@@ -4,7 +4,11 @@ import { getPageBySlug } from "@/lib/contentful";
 
 import { PageView } from "./page-view";
 
-export default async function Page({ params }: PageProps<"/[slug]">) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
   const page = await getPageBySlug(slug);
