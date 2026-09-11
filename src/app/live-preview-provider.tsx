@@ -3,8 +3,6 @@
 // in the user's browser while they are previewing inside Contentful.
 "use client";
 
-import "@contentful/live-preview/style.css";
-
 import { ContentfulLivePreviewProvider } from "@contentful/live-preview/react";
 import type { ReactNode } from "react";
 
