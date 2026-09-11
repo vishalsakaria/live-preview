@@ -3,13 +3,15 @@
 // in the user's browser while they are previewing inside Contentful.
 "use client";
 
+import "@contentful/live-preview/style.css";
+
 import { ContentfulLivePreviewProvider } from "@contentful/live-preview/react";
 import type { ReactNode } from "react";
 
 /**
  * Wraps the site in Contentful's live preview layer. When draft mode is on,
  * editors see live updates as they type and can click content to jump to the
- * matching field in Contentful (via Content Source Maps on encoded fields).
+ * matching field in Contentful (via data attributes on rendered elements).
  * For everyone else, preview features stay off.
  */
 export function LivePreviewProvider({

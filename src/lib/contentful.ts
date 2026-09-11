@@ -1,5 +1,3 @@
-import { encodeCPAResponse } from "@contentful/content-source-maps";
-
 const SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
 const ENVIRONMENT = process.env.CONTENTFUL_ENVIRONMENT ?? "master";
 
@@ -7,11 +5,7 @@ const PREVIEW_HOST = "https://preview.contentful.com";
 
 export const CONTENT_TYPE = "page";
 
-/**
- * Shape of the `page` content type as returned by the Content Preview API.
- * Entries are passed to `useContentfulLiveUpdates` after Content Source Maps
- * encoding, so string fields carry invisible metadata for inspector mode.
- */
+/** Shape of the `page` content type as returned by the Content Preview API. */
 export type PageEntry = {
   sys: { id: string };
   fields: {
@@ -45,11 +39,6 @@ async function request<T>(params: Record<string, string>): Promise<T> {
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value);
   }
-  // Ask Contentful to include Content Source Maps (Premium). The maps are
-  // embedded into field values by encodeCPAResponse so inspector mode works
-  // without manual data attributes on each element.
-  url.searchParams.set("includeContentSourceMaps", "true");
-
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
     cache: "no-store",
@@ -61,8 +50,7 @@ async function request<T>(params: Record<string, string>): Promise<T> {
     );
   }
 
-  const raw = await res.json();
-  return encodeCPAResponse(raw) as T;
+  return (await res.json()) as T;
 }
 
 export async function getPageBySlug(slug: string): Promise<PageEntry | null> {
