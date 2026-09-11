@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getAllPages } from "@/lib/contentful";
+import { getAllPages, normalizeSlug } from "@/lib/contentful";
 
 export default async function Home() {
   const pages = await getAllPages();
@@ -21,7 +21,7 @@ export default async function Home() {
             <li key={page.sys.id}>
               {page.fields.slug ? (
                 <Link
-                  href={`/${page.fields.slug}`}
+                  href={`/${normalizeSlug(page.fields.slug)}`}
                   className="font-medium text-zinc-950 underline dark:text-zinc-50"
                 >
                   {page.fields.internalName ?? page.fields.title}
