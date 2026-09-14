@@ -1,4 +1,4 @@
-import { encodeCPAResponse } from "@contentful/content-source-maps";
+import { encodeCPAResponse, splitEncoding } from "@contentful/content-source-maps";
 
 const SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
 const ENVIRONMENT = process.env.CONTENTFUL_ENVIRONMENT ?? "master";
@@ -80,6 +80,26 @@ async function request<T>(params: Record<string, string>): Promise<T> {
   return encodeCPAResponse(raw) as T;
 }
 
+/**
+ * Content Source Maps embeds invisible tracking characters into every string
+ * field it touches, `slug` included, since our `slug` field is a plain Short
+ * Text field rather than Contentful's built-in Slug type. Left in place, those
+ * characters ride along into `/${slug}` links and Preview API lookups, which
+ * blows past Contentful's URL length limit (414). Inspector mode only needs
+ * the encoding on fields that are actually rendered (title, subTitle), so we
+ * strip it from `slug` right after fetching.
+ */
+function withCleanSlug(entry: PageEntry): PageEntry {
+  if (!entry.fields.slug) {
+    return entry;
+  }
+
+  return {
+    ...entry,
+    fields: { ...entry.fields, slug: splitEncoding(entry.fields.slug).cleaned },
+  };
+}
+
 export async function getPageBySlug(slug: string): Promise<PageEntry | null> {
   const normalized = normalizeSlug(slug);
 
@@ -92,7 +112,7 @@ export async function getPageBySlug(slug: string): Promise<PageEntry | null> {
     });
 
     if (items[0]) {
-      return items[0];
+      return withCleanSlug(items[0]);
     }
   }
 
@@ -105,5 +125,5 @@ export async function getAllPages(): Promise<PageEntry[]> {
     order: "sys.createdAt",
   });
 
-  return items;
+  return items.map(withCleanSlug);
 }
