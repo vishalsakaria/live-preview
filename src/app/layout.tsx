@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
-// @ts-expect-error CSS files are handled by Next.js at runtime.
 import "./globals.css";
 import { ContentSourceMapsBanner } from "./content-source-maps-banner";
 import { DraftModeBanner } from "./draft-mode-banner";
