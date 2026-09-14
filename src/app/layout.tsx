@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import "./globals.css";
+import { ContentSourceMapsBanner } from "./content-source-maps-banner";
 import { DraftModeBanner } from "./draft-mode-banner";
 import { LivePreviewProvider } from "./live-preview-provider";
 
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     >
       <body className="min-h-full flex flex-col">
         <LivePreviewProvider enabled={isEnabled}>
+          <ContentSourceMapsBanner />
           <DraftModeBanner />
           {children}
         </LivePreviewProvider>

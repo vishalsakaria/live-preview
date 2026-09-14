@@ -38,12 +38,6 @@ export async function DraftModeBanner() {
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <span>Draft mode is on — showing unpublished Contentful content.</span>
-        <span
-          title="Inspector mode uses Content Source Maps (invisible metadata encoded into field values) instead of manual data attributes. See src/lib/contentful.ts."
-          className="inline-flex items-center gap-1.5 rounded-full bg-amber-950/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide"
-        >
-          Content Source Maps mode
-        </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="text-amber-950/70">Branch</span>
           <code className="rounded-full bg-amber-950/10 px-2 py-0.5 font-mono text-xs">
