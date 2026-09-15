@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // `headers()` lets Next.js attach extra HTTP response headers to matching
+  // routes, on every request, without touching individual route handlers.
+  // See https://nextjs.org/docs/app/api-reference/config/next-config-js/headers
   async headers() {
     return [
       {

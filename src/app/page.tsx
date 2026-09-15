@@ -2,6 +2,15 @@ import Link from "next/link";
 
 import { getAllPages, normalizeSlug } from "@/lib/contentful";
 
+/**
+ * Home page: lists every `page` entry from Contentful as a link. This is a
+ * Server Component (no `"use client"`), so `getAllPages()` runs on the
+ * server on every request — there's no client-side data fetching here.
+ *
+ * Note this list always reflects Draft Mode too: `getAllPages()` always
+ * queries the Preview API (see `src/lib/contentful.ts`), so a page you've
+ * created but not yet published still shows up here.
+ */
 export default async function Home() {
   const pages = await getAllPages();
 

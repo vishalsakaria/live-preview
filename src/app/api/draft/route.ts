@@ -3,6 +3,22 @@ import { redirect } from "next/navigation";
 
 import { getPageBySlug, normalizeSlug } from "@/lib/contentful";
 
+/**
+ * Entry point for Contentful's "Open live preview" / "Preview" button.
+ *
+ * This is what Contentful actually opens when an editor clicks preview on an
+ * entry — a URL shaped like `/api/draft?secret=...&slug=...`, configured in
+ * the space's Content Preview settings. It has three jobs:
+ *
+ *   1. Verify the request is genuinely from Contentful (via a shared secret).
+ *   2. Turn on Next.js Draft Mode, which is what makes every subsequent page
+ *      render preview content instead of only published content, and shows
+ *      the `DraftModeBanner`.
+ *   3. Redirect the browser to the actual page for the entry being previewed.
+ *
+ * See Next.js's Draft Mode docs for how `draftMode()` works under the hood:
+ * https://nextjs.org/docs/app/building-your-application/configuring/draft-mode
+ */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");

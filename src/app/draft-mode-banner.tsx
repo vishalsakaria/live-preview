@@ -1,6 +1,14 @@
 import { draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 
+/**
+ * Server Action bound to the banner's "Exit draft mode" button. Turns off
+ * Next.js Draft Mode (clearing the preview cookie) and sends the visitor
+ * back to the home page, now seeing the same content a regular visitor
+ * would. The `"use server"` directive is what lets a plain `<form action={...}>`
+ * call server-only code (cookie access) directly from a button click, with
+ * no separate API route needed.
+ */
 async function exitDraftMode() {
   "use server";
 
@@ -22,6 +30,13 @@ function deployment() {
   };
 }
 
+/**
+ * Amber banner shown above the page content whenever Draft Mode is on,
+ * warning visitors (usually just the editor previewing content) that
+ * they're looking at unpublished Contentful content rather than the live
+ * site. Rendered unconditionally from `layout.tsx`; it decides for itself
+ * whether to show anything by checking `draftMode()`.
+ */
 export async function DraftModeBanner() {
   const { isEnabled } = await draftMode();
 

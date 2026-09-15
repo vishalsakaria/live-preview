@@ -11,6 +11,15 @@ import type { ReactNode } from "react";
  * editors see live updates as they type and can click content to jump to the
  * matching field in Contentful (via data attributes on rendered elements).
  * For everyone else, preview features stay off.
+ *
+ * This provider only sets up the SDK's global config (locale, and whether
+ * each feature is switched on). The hooks that actually use it —
+ * `useContentfulLiveUpdates` and `useContentfulInspectorMode` — are called
+ * per-field inside `[slug]/page-view.tsx`.
+ *
+ * @param enabled - Whether draft mode is on for this request (passed down
+ *   from `layout.tsx`, which reads it via `draftMode()`). Gates both
+ *   Contentful features below at once.
  */
 export function LivePreviewProvider({
   children,
